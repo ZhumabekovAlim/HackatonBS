@@ -8,4 +8,6 @@ type User struct {
 	Phone    string `json:"phone"`
 	Password string `json:"password"`
 	Role     string `json:"role"`
+	Points   int    `json:"points"`
+	Progress int    `json:"progress"`
 }

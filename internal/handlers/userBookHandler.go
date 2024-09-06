@@ -24,7 +24,7 @@ func (h *UserBookHandler) GetAllUserBooks(w http.ResponseWriter, r *http.Request
 }
 
 func (h *UserBookHandler) GetUserBookByID(w http.ResponseWriter, r *http.Request) {
-	idStr := r.URL.Query().Get("id")
+	idStr := r.URL.Query().Get(":id")
 	if idStr == "" {
 		http.Error(w, "Missing user book ID", http.StatusBadRequest)
 		return
@@ -66,7 +66,7 @@ func (h *UserBookHandler) CreateUserBook(w http.ResponseWriter, r *http.Request)
 }
 
 func (h *UserBookHandler) UpdateUserBook(w http.ResponseWriter, r *http.Request) {
-	idStr := r.URL.Query().Get("id")
+	idStr := r.URL.Query().Get(":id")
 	if idStr == "" {
 		http.Error(w, "Missing user book ID", http.StatusBadRequest)
 		return
@@ -98,7 +98,7 @@ func (h *UserBookHandler) UpdateUserBook(w http.ResponseWriter, r *http.Request)
 }
 
 func (h *UserBookHandler) DeleteUserBook(w http.ResponseWriter, r *http.Request) {
-	idStr := r.URL.Query().Get("id")
+	idStr := r.URL.Query().Get(":id")
 	if idStr == "" {
 		http.Error(w, "Missing user book ID", http.StatusBadRequest)
 		return

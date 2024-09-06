@@ -24,7 +24,7 @@ func (h *UserEventHandler) GetAllUserEvents(w http.ResponseWriter, r *http.Reque
 }
 
 func (h *UserEventHandler) GetUserEventByID(w http.ResponseWriter, r *http.Request) {
-	idStr := r.URL.Query().Get("id")
+	idStr := r.URL.Query().Get(":id")
 	if idStr == "" {
 		http.Error(w, "Missing user_event ID", http.StatusBadRequest)
 		return
@@ -66,7 +66,7 @@ func (h *UserEventHandler) CreateUserEvent(w http.ResponseWriter, r *http.Reques
 }
 
 func (h *UserEventHandler) UpdateUserEvent(w http.ResponseWriter, r *http.Request) {
-	idStr := r.URL.Query().Get("id")
+	idStr := r.URL.Query().Get(":id")
 	if idStr == "" {
 		http.Error(w, "Missing user_event ID", http.StatusBadRequest)
 		return
@@ -98,7 +98,7 @@ func (h *UserEventHandler) UpdateUserEvent(w http.ResponseWriter, r *http.Reques
 }
 
 func (h *UserEventHandler) DeleteUserEvent(w http.ResponseWriter, r *http.Request) {
-	idStr := r.URL.Query().Get("id")
+	idStr := r.URL.Query().Get(":id")
 	if idStr == "" {
 		http.Error(w, "Missing user_event ID", http.StatusBadRequest)
 		return

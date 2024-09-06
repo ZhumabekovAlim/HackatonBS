@@ -20,7 +20,11 @@ func (app *application) routes() http.Handler {
 	mux.Get("/users/details/:id", standardMiddleware.ThenFunc(app.userHandler.GetUserByID))     // get one user info http://localhost:4000/clients/details/1
 	mux.Del("/users/:id", standardMiddleware.ThenFunc(app.userHandler.DeleteUserByID))          // delete user by id
 	mux.Put("/users/:id", standardMiddleware.ThenFunc(app.userHandler.UpdateUser))              // update user by id
-	mux.Put("/users/password/:id", standardMiddleware.ThenFunc(app.userHandler.ChangePassword)) // update user balance
+	mux.Put("/users/password/:id", standardMiddleware.ThenFunc(app.userHandler.ChangePassword)) // update user password
+
+	// PASSWORD RECOVERY
+	mux.Post("/password/recovery", dynamicMiddleware.ThenFunc(app.userHandler.SendRecoveryHandler))
+	mux.Get("/password/recovery/mail", dynamicMiddleware.ThenFunc(app.userHandler.PasswordRecoveryHandler))
 
 	// EVENTS
 	mux.Post("/events", dynamicMiddleware.ThenFunc(app.eventHandler.CreateEvent))      // create event

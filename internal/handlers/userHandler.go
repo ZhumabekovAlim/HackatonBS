@@ -236,12 +236,12 @@ func (h *UserHandler) SendRecoveryHandler(w http.ResponseWriter, r *http.Request
 func SendRecovery(to string, userId int) {
 	from := "alim.zhumabekov@gmail.com"
 	password := "elzv jann gcur cttx"
-	subject := "Восстановление пароля в системе TENDER-COMMUNITY"
+	subject := "Восстановление пароля в системе Карагандинская ОУНБ"
 
 	smtpHost := "smtp.gmail.com"
 	smtpPort := "587"
 
-	link := fmt.Sprintf("http://176.126.166.163:4000/password/recovery/mail?user_id=%d", userId)
+	link := fmt.Sprintf("http://localhost:4000/password/recovery/mail?user_id=%d", userId)
 
 	body := fmt.Sprintf(`
 		<html>
@@ -289,5 +289,5 @@ func (h *UserHandler) PasswordRecoveryHandler(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	http.Redirect(w, r, "tendercommunity://reset_password?hash="+user_id, http.StatusSeeOther)
+	http.Redirect(w, r, "librarygogol://reset_password?hash="+user_id, http.StatusSeeOther)
 }

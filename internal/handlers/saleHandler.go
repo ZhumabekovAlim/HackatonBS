@@ -24,7 +24,7 @@ func (h *SaleHandler) GetAllSales(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *SaleHandler) GetSaleByID(w http.ResponseWriter, r *http.Request) {
-	idStr := r.URL.Query().Get("id")
+	idStr := r.URL.Query().Get(":id")
 	if idStr == "" {
 		http.Error(w, "Missing sale ID", http.StatusBadRequest)
 		return
@@ -66,7 +66,7 @@ func (h *SaleHandler) CreateSale(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *SaleHandler) UpdateSale(w http.ResponseWriter, r *http.Request) {
-	idStr := r.URL.Query().Get("id")
+	idStr := r.URL.Query().Get(":id")
 	if idStr == "" {
 		http.Error(w, "Missing sale ID", http.StatusBadRequest)
 		return
@@ -98,7 +98,7 @@ func (h *SaleHandler) UpdateSale(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *SaleHandler) DeleteSale(w http.ResponseWriter, r *http.Request) {
-	idStr := r.URL.Query().Get("id")
+	idStr := r.URL.Query().Get(":id")
 	if idStr == "" {
 		http.Error(w, "Missing sale ID", http.StatusBadRequest)
 		return

@@ -24,7 +24,7 @@ var (
 
 func (r *UserRepository) GetAllUsers(ctx context.Context) ([]models.User, error) {
 
-	rows, err := r.Db.QueryContext(ctx, "SELECT id, name, last_name, email, phone, password FROM users WHERE role ='head' ")
+	rows, err := r.Db.QueryContext(ctx, "SELECT id, name, last_name, email, phone, password, role, points, progress FROM users WHERE role !='head' ")
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +33,7 @@ func (r *UserRepository) GetAllUsers(ctx context.Context) ([]models.User, error)
 	var users []models.User
 	for rows.Next() {
 		var user models.User
-		if err := rows.Scan(&user.ID, &user.Name, &user.LastName, &user.Email, &user.Phone, &user.Password, &user.Role); err != nil {
+		if err := rows.Scan(&user.ID, &user.Name, &user.LastName, &user.Email, &user.Phone, &user.Password, &user.Role, &user.Points, &user.Progress); err != nil {
 			return nil, err
 		}
 		users = append(users, user)
@@ -68,8 +68,8 @@ func (r *UserRepository) SignUp(ctx context.Context, user models.User) (models.U
 		return models.User{}, err
 	}
 
-	result, err := r.Db.ExecContext(ctx, "INSERT INTO users(name, last_name, email, phone, password, role) VALUES (?, ?, ?, ?, ?, ?)",
-		user.Name, user.LastName, user.Email, user.Phone, hashedPassword, "user")
+	result, err := r.Db.ExecContext(ctx, "INSERT INTO users(name, last_name, email, phone, password, role, points, progress) VALUES (?, ?, ?, ?, ?, ?, ? , ?)",
+		user.Name, user.LastName, user.Email, user.Phone, hashedPassword, "user", 0, 0)
 	if err != nil {
 		var mysqlErr *mysql.MySQLError
 		if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
@@ -91,7 +91,7 @@ func (r *UserRepository) SignUp(ctx context.Context, user models.User) (models.U
 func (r *UserRepository) LogIn(ctx context.Context, user models.User) (models.User, error) {
 	var storedUser models.User
 
-	query := "SELECT id, name, last_name, email, phone, password, role FROM users WHERE email = ? OR phone = ?"
+	query := "SELECT id, name, last_name, email, phone, password, role,points, progress FROM users WHERE email = ? OR phone = ?"
 	err := r.Db.QueryRowContext(ctx, query, user.Email, user.Phone).Scan(
 		&storedUser.ID,
 		&storedUser.Name,
@@ -100,6 +100,8 @@ func (r *UserRepository) LogIn(ctx context.Context, user models.User) (models.Us
 		&storedUser.Phone,
 		&storedUser.Password,
 		&storedUser.Role,
+		&storedUser.Points,
+		&storedUser.Progress,
 	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -122,7 +124,7 @@ func (r *UserRepository) LogIn(ctx context.Context, user models.User) (models.Us
 func (r *UserRepository) GetUserByID(ctx context.Context, id int) (models.User, error) {
 	var user models.User
 
-	query := "SELECT id, name, last_name, email, phone, password, role FROM users WHERE id = ?"
+	query := "SELECT id, name, last_name, email, phone, password, role, points, progress FROM users WHERE id = ?"
 	err := r.Db.QueryRowContext(ctx, query, id).Scan(
 		&user.ID,
 		&user.Name,
@@ -131,6 +133,8 @@ func (r *UserRepository) GetUserByID(ctx context.Context, id int) (models.User, 
 		&user.Phone,
 		&user.Password,
 		&user.Role,
+		&user.Points,
+		&user.Progress,
 	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -186,7 +190,18 @@ func (r *UserRepository) UpdateUser(ctx context.Context, user models.User) (mode
 		query += " password = ?,"
 		params = append(params, user.Password)
 	}
+
 	if user.Role != "" {
+		query += " role = ?,"
+		params = append(params, user.Role)
+	}
+
+	if user.Points != 0 {
+		query += " role = ?,"
+		params = append(params, user.Role)
+	}
+
+	if user.Progress != 0 {
 		query += " role = ?,"
 		params = append(params, user.Role)
 	}
@@ -200,9 +215,9 @@ func (r *UserRepository) UpdateUser(ctx context.Context, user models.User) (mode
 		return models.User{}, err
 	}
 
-	row := r.Db.QueryRowContext(ctx, "SELECT id, name, last_name, email, phone, password, role FROM users WHERE id = ?", user.ID)
+	row := r.Db.QueryRowContext(ctx, "SELECT id, name, last_name, email, phone, password, role, points, progress FROM users WHERE id = ?", user.ID)
 	var updatedUser models.User
-	err = row.Scan(&updatedUser.ID, &updatedUser.Name, &updatedUser.LastName, &updatedUser.Email, &updatedUser.Phone, &updatedUser.Password, &updatedUser.Role)
+	err = row.Scan(&updatedUser.ID, &updatedUser.Name, &updatedUser.LastName, &updatedUser.Email, &updatedUser.Phone, &updatedUser.Password, &updatedUser.Role, &updatedUser.Points, &updatedUser.Progress)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return models.User{}, models.ErrUserNotFound

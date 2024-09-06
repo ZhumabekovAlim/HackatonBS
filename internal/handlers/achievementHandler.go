@@ -24,7 +24,7 @@ func (h *AchievementHandler) GetAllAchievements(w http.ResponseWriter, r *http.R
 }
 
 func (h *AchievementHandler) GetAchievementByID(w http.ResponseWriter, r *http.Request) {
-	idStr := r.URL.Query().Get("id")
+	idStr := r.URL.Query().Get(":id")
 	if idStr == "" {
 		http.Error(w, "Missing achievement ID", http.StatusBadRequest)
 		return
@@ -66,7 +66,7 @@ func (h *AchievementHandler) CreateAchievement(w http.ResponseWriter, r *http.Re
 }
 
 func (h *AchievementHandler) UpdateAchievement(w http.ResponseWriter, r *http.Request) {
-	idStr := r.URL.Query().Get("id")
+	idStr := r.URL.Query().Get(":id")
 	if idStr == "" {
 		http.Error(w, "Missing achievement ID", http.StatusBadRequest)
 		return
@@ -98,7 +98,7 @@ func (h *AchievementHandler) UpdateAchievement(w http.ResponseWriter, r *http.Re
 }
 
 func (h *AchievementHandler) DeleteAchievement(w http.ResponseWriter, r *http.Request) {
-	idStr := r.URL.Query().Get("id")
+	idStr := r.URL.Query().Get(":id")
 	if idStr == "" {
 		http.Error(w, "Missing achievement ID", http.StatusBadRequest)
 		return
