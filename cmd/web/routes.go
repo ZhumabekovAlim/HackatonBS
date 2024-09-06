@@ -13,7 +13,7 @@ func (app *application) routes() http.Handler {
 
 	mux := pat.New()
 
-	// USERS
+	//  USERS
 	mux.Post("/users/signup", dynamicMiddleware.ThenFunc(app.userHandler.SignUp))               // sign up
 	mux.Post("/users/login", dynamicMiddleware.ThenFunc(app.userHandler.LogIn))                 // login
 	mux.Get("/users", standardMiddleware.ThenFunc(app.userHandler.GetAllUsers))                 // get all users
