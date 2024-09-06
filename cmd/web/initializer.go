@@ -14,9 +14,16 @@ import (
 )
 
 type application struct {
-	errorLog    *log.Logger
-	infoLog     *log.Logger
-	userHandler *handlers.UserHandler
+	errorLog               *log.Logger
+	infoLog                *log.Logger
+	userHandler            *handlers.UserHandler
+	eventHandler           *handlers.EventHandler
+	bookHandler            *handlers.BookHandler
+	saleHandler            *handlers.SaleHandler
+	achievementHandler     *handlers.AchievementHandler
+	userBookHandler        *handlers.UserBookHandler
+	userEventHandler       *handlers.UserEventHandler
+	userAchievementHandler *handlers.UserAchievementHandler
 }
 
 func initializeApp(db *sql.DB, errorLog, infoLog *log.Logger) *application {
@@ -39,40 +46,46 @@ func initializeApp(db *sql.DB, errorLog, infoLog *log.Logger) *application {
 	userRepo := &repositories.UserRepository{Db: db}
 	userService := &services.UserService{Repo: userRepo}
 	userHandler := &handlers.UserHandler{Service: userService}
-	//
-	//permissionRepo := &repositories.PermissionRepository{Db: db}
-	//permissionService := &services.PermissionService{Repo: permissionRepo}
-	//permissionHandler := &handlers.PermissionHandler{Service: permissionService}
-	//
-	//companyRepo := &repositories.CompanyRepository{Db: db}
-	//companyService := &services.CompanyService{Repo: companyRepo}
-	//companyHandler := &handlers.CompanyHandler{Service: companyService}
-	//
-	//expenseRepo := &repositories.PersonalExpenseRepository{Db: db}
-	//expenseService := &services.PersonalExpenseService{Repo: expenseRepo}
-	//expenseHandler := &handlers.PersonalExpenseHandler{Service: expenseService}
-	//
-	//extraTransactionRepo := &repositories.ExtraTransactionRepository{Db: db}
-	//extraTransactionService := &services.ExtraTransactionService{Repo: extraTransactionRepo}
-	//extraTransactionHandler := &handlers.ExtraTransactionHandler{Service: extraTransactionService}
-	//
-	//transactionRepo := &repositories.TransactionRepository{Db: db}
-	//transactionService := &services.TransactionService{Repo: transactionRepo}
-	//transactionHandler := &handlers.TransactionHandler{
-	//	Service:                 transactionService,
-	//	ExtraTransactionService: extraTransactionService,
-	//}
+
+	eventRepo := &repositories.EventRepository{Db: db}
+	eventService := &services.EventService{Repo: eventRepo}
+	eventHandler := &handlers.EventHandler{Service: eventService}
+
+	bookRepo := &repositories.BookRepository{Db: db}
+	bookService := &services.BookService{Repo: bookRepo}
+	bookHandler := &handlers.BookHandler{Service: bookService}
+
+	saleRepo := &repositories.SaleRepository{Db: db}
+	saleService := &services.SaleService{Repo: saleRepo}
+	saleHandler := &handlers.SaleHandler{Service: saleService}
+
+	achievementRepo := &repositories.AchievementRepository{Db: db}
+	achievementService := &services.AchievementService{Repo: achievementRepo}
+	achievementHandler := &handlers.AchievementHandler{Service: achievementService}
+
+	userBookRepo := &repositories.UserBookRepository{Db: db}
+	userBookService := &services.UserBookService{Repo: userBookRepo}
+	userBookHandler := &handlers.UserBookHandler{Service: userBookService}
+
+	userEventRepo := &repositories.UserEventRepository{Db: db}
+	userEventService := &services.UserEventService{Repo: userEventRepo}
+	userEventHandler := &handlers.UserEventHandler{Service: userEventService}
+
+	userAchievementRepo := &repositories.UserAchievementRepository{Db: db}
+	userAchievementService := &services.UserAchievementService{Repo: userAchievementRepo}
+	userAchievementHandler := &handlers.UserAchievementHandler{Service: userAchievementService}
 
 	return &application{
-		errorLog:    errorLog,
-		infoLog:     infoLog,
-		userHandler: userHandler,
-		//permissionHandler:       permissionHandler,
-		//companyHandler:          companyHandler,
-		//transactionHandler:      transactionHandler,
-		//expenseHandler:          expenseHandler,
-		//extraTransactionHandler: extraTransactionHandler,
-		//fcmHandler:              fcmHandler,
+		errorLog:               errorLog,
+		infoLog:                infoLog,
+		userHandler:            userHandler,
+		eventHandler:           eventHandler,
+		bookHandler:            bookHandler,
+		saleHandler:            saleHandler,
+		achievementHandler:     achievementHandler,
+		userBookHandler:        userBookHandler,
+		userEventHandler:       userEventHandler,
+		userAchievementHandler: userAchievementHandler,
 	}
 }
 

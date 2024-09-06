@@ -7,8 +7,8 @@ CREATE TABLE users
     phone      VARCHAR(20)  NOT NULL,
     password   VARCHAR(255) NOT NULL,
     role       VARCHAR(20)  NOT NULL,
+    points     INT          NOT NULL,
+    progress   INT          NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-
-use bs
