@@ -75,5 +75,8 @@ func (app *application) routes() http.Handler {
 	mux.Put("/user_achievements/:id", standardMiddleware.ThenFunc(app.userAchievementHandler.UpdateUserAchievement))  // update user_achievement by id
 	mux.Del("/user_achievements/:id", standardMiddleware.ThenFunc(app.userAchievementHandler.DeleteUserAchievement))  // delete user_achievement by id
 
+	// AI
+	http.Handle("/uploads/", http.StripPrefix("/uploads/", http.FileServer(http.Dir("./uploads"))))
+	mux.Post("/photo-detect", dynamicMiddleware.ThenFunc(app.bookHandler.PhotoDetect)) // detect photo and return book title
 	return standardMiddleware.Then(mux)
 }

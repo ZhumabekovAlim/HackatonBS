@@ -11,8 +11,11 @@ type BookRepository struct {
 	Db *sql.DB
 }
 
-func (r *BookRepository) GetAllBooks(ctx context.Context) ([]models.Book, error) {
-	rows, err := r.Db.QueryContext(ctx, "SELECT id, isbn, book_title, book_author, year_of_publication, publisher, image_url_s, image_url_m, image_url_l, book_status, created_at, updated_at FROM books")
+func (r *BookRepository) GetAllBooks(ctx context.Context, page, limit int) ([]models.Book, error) {
+	offset := (page - 1) * limit
+	query := "SELECT id, isbn, book_title, book_author, year_of_publication, publisher, image_url_s, image_url_m, image_url_l, book_status, created_at, updated_at FROM books LIMIT ? OFFSET ?"
+
+	rows, err := r.Db.QueryContext(ctx, query, limit, offset)
 	if err != nil {
 		return nil, err
 	}
@@ -74,4 +77,24 @@ func (r *BookRepository) UpdateBook(ctx context.Context, book models.Book) (mode
 func (r *BookRepository) DeleteBook(ctx context.Context, id int) error {
 	_, err := r.Db.ExecContext(ctx, "DELETE FROM books WHERE id = ?", id)
 	return err
+}
+
+func (r *BookRepository) FindByTitle(ctx context.Context, title string) ([]models.Book, error) {
+	rows, err := r.Db.QueryContext(ctx, "SELECT * FROM books WHERE book_title LIKE ?", "%"+title+"%")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var books []models.Book
+	for rows.Next() {
+		var book models.Book
+		err := rows.Scan(&book.ID, &book.ISBN, &book.Title, &book.Author, &book.YearOfPublication, &book.Publisher, &book.ImageURLS, &book.ImageURLM, &book.ImageURLL, &book.Status, &book.CreatedAt, &book.UpdatedAt)
+		if err != nil {
+			return nil, err
+		}
+		books = append(books, book)
+	}
+
+	return books, nil
 }
