@@ -4,10 +4,13 @@ import (
 	"BS_Hackathon/internal/handlers"
 	"BS_Hackathon/internal/repositories"
 	"BS_Hackathon/internal/services"
+	"context"
 	_ "context"
 	"database/sql"
 	_ "firebase.google.com/go"
+	firebase "firebase.google.com/go"
 	"fmt"
+	"google.golang.org/api/option"
 	_ "google.golang.org/api/option"
 	"log"
 	"net/http"
@@ -24,25 +27,27 @@ type application struct {
 	userBookHandler        *handlers.UserBookHandler
 	userEventHandler       *handlers.UserEventHandler
 	userAchievementHandler *handlers.UserAchievementHandler
+	fcmHandler             *handlers.FCMHandler
+	favoriteHandler        *handlers.FavoriteHandler
 }
 
 func initializeApp(db *sql.DB, errorLog, infoLog *log.Logger) *application {
 
-	//ctx := context.Background()
-	//sa := option.WithCredentialsFile("/root/go/src/tender/cmd/tender/serviceAccountKey.json")
-	//
-	//firebaseApp, err := firebase.NewApp(ctx, &firebase.Config{ProjectID: "tendercommunity-17cd5"}, sa)
-	//if err != nil {
-	//	errorLog.Fatalf("Ошибка в нахождении приложения: %v\n", err)
-	//}
-	//
-	//fcmClient, err := firebaseApp.Messaging(ctx)
-	//if err != nil {
-	//	errorLog.Fatalf("Ошибка при неверном ID устройства: %v\n", err)
-	//}
+	ctx := context.Background()
+	sa := option.WithCredentialsFile("C:\\Users\\Alim\\GolandProjects\\BS_Hackathon\\cmd\\web\\serviceAccountKey.json")
 
-	//fcmHandler := handlers.NewFCMHandler(fcmClient, db)
-	//
+	firebaseApp, err := firebase.NewApp(ctx, &firebase.Config{ProjectID: "gogolsbookshelf"}, sa)
+	if err != nil {
+		errorLog.Fatalf("Ошибка в нахождении приложения: %v\n", err)
+	}
+
+	fcmClient, err := firebaseApp.Messaging(ctx)
+	if err != nil {
+		errorLog.Fatalf("Ошибка при неверном ID устройства: %v\n", err)
+	}
+
+	fcmHandler := handlers.NewFCMHandler(fcmClient, db)
+
 	userRepo := &repositories.UserRepository{Db: db}
 	userService := &services.UserService{Repo: userRepo}
 	userHandler := &handlers.UserHandler{Service: userService}
@@ -75,6 +80,10 @@ func initializeApp(db *sql.DB, errorLog, infoLog *log.Logger) *application {
 	userAchievementService := &services.UserAchievementService{Repo: userAchievementRepo}
 	userAchievementHandler := &handlers.UserAchievementHandler{Service: userAchievementService}
 
+	favoriteRepo := &repositories.FavoriteRepository{Db: db}
+	favoriteService := &services.FavoriteService{Repo: favoriteRepo}
+	favoriteHandler := &handlers.FavoriteHandler{Service: favoriteService}
+
 	return &application{
 		errorLog:               errorLog,
 		infoLog:                infoLog,
@@ -86,6 +95,8 @@ func initializeApp(db *sql.DB, errorLog, infoLog *log.Logger) *application {
 		userBookHandler:        userBookHandler,
 		userEventHandler:       userEventHandler,
 		userAchievementHandler: userAchievementHandler,
+		fcmHandler:             fcmHandler,
+		favoriteHandler:        favoriteHandler,
 	}
 }
 

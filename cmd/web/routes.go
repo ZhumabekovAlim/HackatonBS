@@ -80,7 +80,19 @@ func (app *application) routes() http.Handler {
 	mux.Del("/user_achievements/:id", standardMiddleware.ThenFunc(app.userAchievementHandler.DeleteUserAchievement))  // delete user_achievement by id
 
 	// AI
-	http.Handle("/uploads/", http.StripPrefix("/uploads/", http.FileServer(http.Dir("./uploads"))))
 	mux.Post("/photo-detect", dynamicMiddleware.ThenFunc(app.bookHandler.PhotoDetect)) // detect photo and return book title
+
+	// NOTIFY
+	mux.Post("/notify", dynamicMiddleware.ThenFunc(app.fcmHandler.NotifyChange))             //send notification
+	mux.Post("/notify/token/create", dynamicMiddleware.ThenFunc(app.fcmHandler.CreateToken)) //create notification
+	mux.Del("/notify/token/:id", dynamicMiddleware.ThenFunc(app.fcmHandler.DeleteToken))     // delete notification
+
+	// FAVORITES
+	mux.Post("/favorites", dynamicMiddleware.ThenFunc(app.favoriteHandler.CreateFavorite))          // create favorite
+	mux.Get("/favorites/user/id", standardMiddleware.ThenFunc(app.favoriteHandler.GetAllFavorites)) // get all favorites
+	mux.Get("/favorites/:id", standardMiddleware.ThenFunc(app.favoriteHandler.GetFavoriteByID))     // get favorite by id
+	mux.Put("/favorites/:id", standardMiddleware.ThenFunc(app.favoriteHandler.UpdateFavorite))      // update favorite by id
+	mux.Del("/favorites/:id", standardMiddleware.ThenFunc(app.favoriteHandler.DeleteFavorite))      // delete favorite by id
+
 	return standardMiddleware.Then(mux)
 }
