@@ -32,7 +32,7 @@ func (r *UserBookRepository) GetAllUserBooks(ctx context.Context) ([]models.User
 
 func (r *UserBookRepository) GetUserBookByID(ctx context.Context, id int) (models.UserBook, error) {
 	var userBook models.UserBook
-	err := r.Db.QueryRowContext(ctx, "SELECT id, user_id, book_id, date_from, date_to, date_return, created_at, updated_at FROM user_book WHERE id = ?", id).Scan(
+	err := r.Db.QueryRowContext(ctx, "SELECT id, user_id, book_id, date_from, date_to, date_return, created_at, updated_at FROM user_book WHERE book_id = ?", id).Scan(
 		&userBook.ID, &userBook.UserID, &userBook.BookID, &userBook.DateFrom, &userBook.DateTo, &userBook.DateReturn, &userBook.CreatedAt, &userBook.UpdatedAt,
 	)
 	if err != nil {

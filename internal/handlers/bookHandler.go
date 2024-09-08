@@ -214,7 +214,7 @@ func (h *BookHandler) PhotoDetect(w http.ResponseWriter, r *http.Request) {
 func (h *BookHandler) AnalyzePhoto(imageURL string) (string, error) {
 	// OpenAI API URL and Key from environment variables
 	url := "https://api.openai.com/v1/chat/completions"
-	apiKey := "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"
+	apiKey := "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"
 
 	if apiKey == "" {
 		return "", fmt.Errorf("OpenAI API key is missing")

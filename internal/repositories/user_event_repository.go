@@ -32,7 +32,7 @@ func (r *UserEventRepository) GetAllUserEvents(ctx context.Context) ([]models.Us
 
 func (r *UserEventRepository) GetUserEventByID(ctx context.Context, id int) (models.UserEvent, error) {
 	var userEvent models.UserEvent
-	err := r.Db.QueryRowContext(ctx, "SELECT id, user_id, event_id, status, payment, created_at, updated_at FROM user_event WHERE id = ?", id).Scan(
+	err := r.Db.QueryRowContext(ctx, "SELECT id, user_id, event_id, status, payment, created_at, updated_at FROM user_event WHERE event_id = ?", id).Scan(
 		&userEvent.ID, &userEvent.UserID, &userEvent.EventID, &userEvent.Status, &userEvent.Payment, &userEvent.CreatedAt, &userEvent.UpdatedAt,
 	)
 	if err != nil {
