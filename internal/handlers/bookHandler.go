@@ -291,3 +291,14 @@ func (h *BookHandler) AnalyzePhoto(imageURL string) (string, error) {
 
 	return "", fmt.Errorf("no response from OpenAI")
 }
+
+func (h *BookHandler) GetAllNewBooks(w http.ResponseWriter, r *http.Request) {
+	books, err := h.Service.GetAllNewBooks(r.Context())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(books)
+}

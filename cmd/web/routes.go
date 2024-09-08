@@ -34,11 +34,12 @@ func (app *application) routes() http.Handler {
 	mux.Del("/events/:id", standardMiddleware.ThenFunc(app.eventHandler.DeleteEvent))  // delete event by id
 
 	// BOOKS
-	mux.Post("/books", dynamicMiddleware.ThenFunc(app.bookHandler.CreateBook))      // create book
-	mux.Get("/books", standardMiddleware.ThenFunc(app.bookHandler.GetAllBooks))     // get all books
-	mux.Get("/books/:id", standardMiddleware.ThenFunc(app.bookHandler.GetBookByID)) // get book by id
-	mux.Put("/books/:id", standardMiddleware.ThenFunc(app.bookHandler.UpdateBook))  // update book by id
-	mux.Del("/books/:id", standardMiddleware.ThenFunc(app.bookHandler.DeleteBook))  // delete book by id
+	mux.Post("/books", dynamicMiddleware.ThenFunc(app.bookHandler.CreateBook))         // create book
+	mux.Get("/books", standardMiddleware.ThenFunc(app.bookHandler.GetAllBooks))        // get all books
+	mux.Get("/books/:id", standardMiddleware.ThenFunc(app.bookHandler.GetBookByID))    // get book by id
+	mux.Put("/books/:id", standardMiddleware.ThenFunc(app.bookHandler.UpdateBook))     // update book by id
+	mux.Del("/books/:id", standardMiddleware.ThenFunc(app.bookHandler.DeleteBook))     // delete book by id
+	mux.Get("/books/new", standardMiddleware.ThenFunc(app.bookHandler.GetAllNewBooks)) // get all new books
 
 	// SALES
 	mux.Post("/sales", dynamicMiddleware.ThenFunc(app.saleHandler.CreateSale))      // create sale
@@ -55,11 +56,14 @@ func (app *application) routes() http.Handler {
 	mux.Del("/achievements/:id", standardMiddleware.ThenFunc(app.achievementHandler.DeleteAchievement))  // delete achievement by id
 
 	// USER_BOOK
-	mux.Post("/user_books", dynamicMiddleware.ThenFunc(app.userBookHandler.CreateUserBook))      // create user_book
-	mux.Get("/user_books", standardMiddleware.ThenFunc(app.userBookHandler.GetAllUserBooks))     // get all user_books
-	mux.Get("/user_books/:id", standardMiddleware.ThenFunc(app.userBookHandler.GetUserBookByID)) // get user_book by id
-	mux.Put("/user_books/:id", standardMiddleware.ThenFunc(app.userBookHandler.UpdateUserBook))  // update user_book by id
-	mux.Del("/user_books/:id", standardMiddleware.ThenFunc(app.userBookHandler.DeleteUserBook))  // delete user_book by id
+	mux.Post("/user_books", dynamicMiddleware.ThenFunc(app.userBookHandler.CreateUserBook))                     // create user_book
+	mux.Get("/user_books", standardMiddleware.ThenFunc(app.userBookHandler.GetAllUserBooks))                    // get all user_books
+	mux.Get("/user_books/:id", standardMiddleware.ThenFunc(app.userBookHandler.GetUserBookByID))                // get user_book by id
+	mux.Put("/user_books/:id", standardMiddleware.ThenFunc(app.userBookHandler.UpdateUserBook))                 // update user_book by id
+	mux.Del("/user_books/:id", standardMiddleware.ThenFunc(app.userBookHandler.DeleteUserBook))                 // delete user_book by id
+	mux.Get("/user_books/expired/:id", standardMiddleware.ThenFunc(app.userBookHandler.GetAllUserExpiredBooks)) // get all expired books
+	mux.Get("/user_books/now/:id", standardMiddleware.ThenFunc(app.userBookHandler.GetAllUserNowBooks))         // get all now books
+	mux.Get("/user_books/return/:id", standardMiddleware.ThenFunc(app.userBookHandler.GetAllUserBooks))         // get all returned books
 
 	// USER_EVENT
 	mux.Post("/user_events", dynamicMiddleware.ThenFunc(app.userEventHandler.CreateUserEvent))      // create user_event

@@ -118,3 +118,72 @@ func (h *UserBookHandler) DeleteUserBook(w http.ResponseWriter, r *http.Request)
 
 	w.WriteHeader(http.StatusNoContent)
 }
+
+func (h *UserBookHandler) GetAllUserExpiredBooks(w http.ResponseWriter, r *http.Request) {
+	idStr := r.URL.Query().Get(":id")
+	if idStr == "" {
+		http.Error(w, "Missing user ID", http.StatusBadRequest)
+		return
+	}
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Invalid user ID", http.StatusBadRequest)
+		return
+	}
+
+	userBooks, err := h.Service.GetAllUserExpiredBooks(r.Context(), id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(userBooks)
+}
+
+func (h *UserBookHandler) GetAllUserNowBooks(w http.ResponseWriter, r *http.Request) {
+	idStr := r.URL.Query().Get(":id")
+	if idStr == "" {
+		http.Error(w, "Missing user ID", http.StatusBadRequest)
+		return
+	}
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Invalid user ID", http.StatusBadRequest)
+		return
+	}
+
+	userBooks, err := h.Service.GetAllUserNowBooks(r.Context(), id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(userBooks)
+}
+
+func (h *UserBookHandler) GetAllUserReturnBooks(w http.ResponseWriter, r *http.Request) {
+	idStr := r.URL.Query().Get(":id")
+	if idStr == "" {
+		http.Error(w, "Missing user ID", http.StatusBadRequest)
+		return
+	}
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Invalid user ID", http.StatusBadRequest)
+		return
+	}
+
+	userBooks, err := h.Service.GetAllUserReturnBooks(r.Context(), id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(userBooks)
+}

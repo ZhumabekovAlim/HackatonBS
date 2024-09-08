@@ -29,3 +29,15 @@ func (s *UserBookService) UpdateUserBook(ctx context.Context, userBook models.Us
 func (s *UserBookService) DeleteUserBook(ctx context.Context, id int) error {
 	return s.Repo.DeleteUserBook(ctx, id)
 }
+
+func (s *UserBookService) GetAllUserExpiredBooks(ctx context.Context, id int) ([]models.UserBook, error) {
+	return s.Repo.GetAllUserExpiredBooks(ctx, id)
+}
+
+func (s *UserBookService) GetAllUserNowBooks(ctx context.Context, id int) ([]models.UserBook, error) {
+	return s.Repo.GetAllUserNowBooks(ctx, id)
+}
+
+func (s *UserBookService) GetAllUserReturnBooks(ctx context.Context, id int) ([]models.UserBook, error) {
+	return s.Repo.GetAllUserReturnBooks(ctx, id)
+}

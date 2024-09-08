@@ -33,3 +33,7 @@ func (s *BookService) DeleteBook(ctx context.Context, id int) error {
 func (s *BookService) FindBooksByTitle(ctx context.Context, title string) ([]models.Book, error) {
 	return s.Repo.FindByTitle(ctx, title)
 }
+
+func (s *BookService) GetAllNewBooks(ctx context.Context) ([]models.Book, error) {
+	return s.Repo.GetAllNewBooks(ctx)
+}

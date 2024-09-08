@@ -47,7 +47,7 @@ func (r *UserBookRepository) GetUserBookByID(ctx context.Context, id int) (model
 
 func (r *UserBookRepository) CreateUserBook(ctx context.Context, userBook models.UserBook) (models.UserBook, error) {
 	result, err := r.Db.ExecContext(ctx, "INSERT INTO user_book (user_id, book_id, date_from, date_to, date_return) VALUES (?, ?, ?, ?, ?)",
-		userBook.UserID, userBook.BookID, userBook.DateFrom, userBook.DateTo, userBook.DateReturn)
+		userBook.UserID, userBook.BookID, userBook.DateFrom, userBook.DateTo, nil)
 	if err != nil {
 		return models.UserBook{}, err
 	}
@@ -74,4 +74,61 @@ func (r *UserBookRepository) UpdateUserBook(ctx context.Context, userBook models
 func (r *UserBookRepository) DeleteUserBook(ctx context.Context, id int) error {
 	_, err := r.Db.ExecContext(ctx, "DELETE FROM user_book WHERE id = ?", id)
 	return err
+}
+
+func (r *UserBookRepository) GetAllUserExpiredBooks(ctx context.Context, id int) ([]models.UserBook, error) {
+	rows, err := r.Db.QueryContext(ctx, "SELECT id, user_id, book_id, date_from, date_to, date_return, created_at, updated_at FROM user_book WHERE user_id = ? AND date_to < now() and date_return IS NULL", id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var userBooks []models.UserBook
+	for rows.Next() {
+		var userBook models.UserBook
+		if err := rows.Scan(&userBook.ID, &userBook.UserID, &userBook.BookID, &userBook.DateFrom, &userBook.DateTo, &userBook.DateReturn, &userBook.CreatedAt, &userBook.UpdatedAt); err != nil {
+			return nil, err
+		}
+		userBooks = append(userBooks, userBook)
+	}
+
+	return userBooks, nil
+}
+
+func (r *UserBookRepository) GetAllUserNowBooks(ctx context.Context, id int) ([]models.UserBook, error) {
+	rows, err := r.Db.QueryContext(ctx, "SELECT id, user_id, book_id, date_from, date_to, date_return, created_at, updated_at FROM user_book WHERE user_id = ? AND date_return IS NULL", id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var userBooks []models.UserBook
+	for rows.Next() {
+		var userBook models.UserBook
+		if err := rows.Scan(&userBook.ID, &userBook.UserID, &userBook.BookID, &userBook.DateFrom, &userBook.DateTo, &userBook.DateReturn, &userBook.CreatedAt, &userBook.UpdatedAt); err != nil {
+			return nil, err
+		}
+		userBooks = append(userBooks, userBook)
+	}
+
+	return userBooks, nil
+}
+
+func (r *UserBookRepository) GetAllUserReturnBooks(ctx context.Context, id int) ([]models.UserBook, error) {
+	rows, err := r.Db.QueryContext(ctx, "SELECT id, user_id, book_id, date_from, date_to, date_return, created_at, updated_at FROM user_book WHERE user_id = ? AND date_return IS NOT NULL", id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var userBooks []models.UserBook
+	for rows.Next() {
+		var userBook models.UserBook
+		if err := rows.Scan(&userBook.ID, &userBook.UserID, &userBook.BookID, &userBook.DateFrom, &userBook.DateTo, &userBook.DateReturn, &userBook.CreatedAt, &userBook.UpdatedAt); err != nil {
+			return nil, err
+		}
+		userBooks = append(userBooks, userBook)
+	}
+
+	return userBooks, nil
 }

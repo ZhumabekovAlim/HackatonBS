@@ -98,3 +98,24 @@ func (r *BookRepository) FindByTitle(ctx context.Context, title string) ([]model
 
 	return books, nil
 }
+
+func (r *BookRepository) GetAllNewBooks(ctx context.Context) ([]models.Book, error) {
+	query := "SELECT id, isbn, book_title, book_author, year_of_publication, publisher, image_url_s, image_url_m, image_url_l, book_status, created_at, updated_at FROM books ORDER BY id DESC LIMIT 3"
+
+	rows, err := r.Db.QueryContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var books []models.Book
+	for rows.Next() {
+		var book models.Book
+		if err := rows.Scan(&book.ID, &book.ISBN, &book.Title, &book.Author, &book.YearOfPublication, &book.Publisher, &book.ImageURLS, &book.ImageURLM, &book.ImageURLL, &book.Status, &book.CreatedAt, &book.UpdatedAt); err != nil {
+			return nil, err
+		}
+		books = append(books, book)
+	}
+
+	return books, nil
+}
