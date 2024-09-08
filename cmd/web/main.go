@@ -19,7 +19,7 @@ func main() {
 	if port != "" {
 		port = ":" + port
 	} else {
-		port = ":4000"
+		port = ":4001"
 	}
 
 	addr := flag.String("addr", port, "HTTP network address")
@@ -41,7 +41,7 @@ func main() {
 	app := initializeApp(db, errorLog, infoLog)
 
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:19006", "exp://192.168.1.219:8081", "exp://192.168.1.82:8081", "timetodo://"},
+		AllowedOrigins:   []string{"http://localhost:19006", "exp://192.168.1.219:8081", "exp://192.168.1.82:8081", "librarygogol://"},
 		AllowedMethods:   []string{"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
 		AllowCredentials: true,
 		AllowedHeaders:   []string{"Content-Type", "Content-Length", "Accept-Encoding", "X-CSRF-Token", "Authorization", "Accept", "Origin", "Cache-Control", "X-Requested-With"},

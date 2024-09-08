@@ -89,10 +89,17 @@ func (app *application) routes() http.Handler {
 
 	// FAVORITES
 	mux.Post("/favorites", dynamicMiddleware.ThenFunc(app.favoriteHandler.CreateFavorite))          // create favorite
-	mux.Get("/favorites/user/id", standardMiddleware.ThenFunc(app.favoriteHandler.GetAllFavorites)) // get all favorites
+	mux.Get("/favorites/user/id", standardMiddleware.ThenFunc(app.favoriteHandler.GetAllFavorites)) // get all favorites by user id
 	mux.Get("/favorites/:id", standardMiddleware.ThenFunc(app.favoriteHandler.GetFavoriteByID))     // get favorite by id
 	mux.Put("/favorites/:id", standardMiddleware.ThenFunc(app.favoriteHandler.UpdateFavorite))      // update favorite by id
 	mux.Del("/favorites/:id", standardMiddleware.ThenFunc(app.favoriteHandler.DeleteFavorite))      // delete favorite by id
+
+	// REVIEWS
+	mux.Post("/reviews", dynamicMiddleware.ThenFunc(app.reviewHandler.CreateReview))           // create review
+	mux.Get("/reviews/book/:id", standardMiddleware.ThenFunc(app.reviewHandler.GetAllReviews)) // get all reviews by book id
+	mux.Get("/reviews/:id", standardMiddleware.ThenFunc(app.reviewHandler.GetReviewByID))      // get review by id
+	mux.Put("/reviews/:id", standardMiddleware.ThenFunc(app.reviewHandler.UpdateReview))       // update review by id
+	mux.Del("/reviews/:id", standardMiddleware.ThenFunc(app.reviewHandler.DeleteReview))       // delete review by id
 
 	return standardMiddleware.Then(mux)
 }

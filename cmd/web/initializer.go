@@ -29,14 +29,15 @@ type application struct {
 	userAchievementHandler *handlers.UserAchievementHandler
 	fcmHandler             *handlers.FCMHandler
 	favoriteHandler        *handlers.FavoriteHandler
+	reviewHandler          *handlers.ReviewHandler
 }
 
 func initializeApp(db *sql.DB, errorLog, infoLog *log.Logger) *application {
 
 	ctx := context.Background()
-	sa := option.WithCredentialsFile("C:\\Users\\Alim\\GolandProjects\\BS_Hackathon\\cmd\\web\\serviceAccountKey.json")
+	sa := option.WithCredentialsFile("/root/go/src/BS_Hackathon/cmd/web/serviceAccountKey.json")
 
-	firebaseApp, err := firebase.NewApp(ctx, &firebase.Config{ProjectID: "gogolsbookshelf"}, sa)
+	firebaseApp, err := firebase.NewApp(ctx, &firebase.Config{ProjectID: "librarygogol"}, sa)
 	if err != nil {
 		errorLog.Fatalf("Ошибка в нахождении приложения: %v\n", err)
 	}
@@ -84,6 +85,10 @@ func initializeApp(db *sql.DB, errorLog, infoLog *log.Logger) *application {
 	favoriteService := &services.FavoriteService{Repo: favoriteRepo}
 	favoriteHandler := &handlers.FavoriteHandler{Service: favoriteService}
 
+	reviewRepo := &repositories.ReviewRepository{Db: db}
+	reviewService := &services.ReviewService{Repo: reviewRepo}
+	reviewHandler := &handlers.ReviewHandler{Service: reviewService}
+
 	return &application{
 		errorLog:               errorLog,
 		infoLog:                infoLog,
@@ -97,6 +102,7 @@ func initializeApp(db *sql.DB, errorLog, infoLog *log.Logger) *application {
 		userAchievementHandler: userAchievementHandler,
 		fcmHandler:             fcmHandler,
 		favoriteHandler:        favoriteHandler,
+		reviewHandler:          reviewHandler,
 	}
 }
 
